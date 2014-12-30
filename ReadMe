@@ -1,0 +1,78 @@
+Files present in the folder:
+Task1:
+1) Task1/main_2.c
+2) Task1/i2c_flash.c
+3) Task1/MakeFile
+Task2:
+4) Task2/main_2.c
+5) Task2/i2c_flash.c
+6) Task2/MakeFile
+
+7) Report.pdf
+8) ReadMe
+
+
+main_2.c
+========
+This is a program to test the driver that has been implemented.As soon as code is executed, it asks the user for input to perform one of 7 operations listed below.
+
+Input command: 
+1. Read
+2. Write
+3. FLASHGETS
+4. FLASHGETP
+5. FLASHSETP
+6. FLASHERASE
+7. Exit
+
+Read-On selecting this command, the user is prompted for number of pages to be read. And then entered number of pages are read from EEPROM and displayed to the 
+user along with success or failure message. For Non Blocking Task2, in read function 1 sec sleep is introduced and after every read command, the programs checks if data is ready to be read.
+If it is ready then data is read, else another attempt to read is made after 1 sec.
+
+Write-On selecting this command, the user is prompted for number of pages to be write. And then entered number of pages are written to EEPROM and success or failure message is displayed to user.
+
+FLASHGETS-This option is used to get the status of the EEPROM, whether it is busy or free.
+
+FLASHGETP-This option is used to get the current page position pointer.
+
+FLASHSETP-This option is used to set the current page position pointer.
+
+FLASHERASE-This option is used to erase all 0-511 pages of EEPROM.
+
+Exit-This option is used to exit from the program.
+
+Note: 
+For write operation, a random string generator has been used to generate data of given page size and written into EEPROM.
+
+
+i2c_flash.c
+===========
+This file is driver part implementation of I2C. It receives inputs from user space and does necessary processing to pass output back to user space. It is used to read, write, perform IOCTL operations on the EEPROM.
+
+
+Steps to execute
+================
+1) In the terminal, navigate to the path where source files have been placed. There are two folders for the project. One for the Task 1 and second folder is 	for Task2. For Task1(Blocking) use the sources placed in Task1 folder and for Task2(Non Blocking) use the source present in folder Task2.
+2) Run the command "make all", this generates the .ko file for the driver.
+3) Install the i2c_flash.ko file into the kernel by using the command "sudo insmod i2c_flash.ko"
+4) To check if the i2c_flash.ko has been loaded into the list of modules, use the command lsmod.
+5) Create the main_2.o object file, by using the command "$CC -o main_2.o main_2.c".
+6) Now run the command ./main_2.o to execute the program. Various input commands can be provided to test the driver.
+7) To remove the module from the kernel use the command "sudo rmmod i2c_flash"
+
+Note:
+For better understanding of Task2, a sleep has been introduced into main_2.c program to map output properly to user level understanding.
+
+
+Makefile
+========
+This file is used to generate all binary/object files for loading module into the kernel. The file has been created for local running only, it needs to be modified for crosscompiling depending upon the SDK location.
+
+The two below mentioned variables need to be changed to SDK path. (Provided SDK path is my local SDK path)
+KDIR:= ~/Documents/LAB/SDK/sysroots/i586-poky-linux/usr/src/kernel
+SROOT=~/Documents/LAB/SDK/sysroots/i586-poky-linux/usr/src/kernel
+
+
+Report.pdf
+==========
+This is Report for the assignment 2. It contains analysis of how the driver program can be enhanced to work for different EEPROM Chip with different slave address and EEPROM Chip with different page size. It also provides an analysis on how the driver can be developed further to support calls from multiple user threads.
